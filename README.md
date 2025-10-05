@@ -1,75 +1,16 @@
-# 🌱 App Bem Estar
-**Plataforma de Monitoramento e Gestão de Saúde Mental**  
-*(Projeto alinhado ao ODS 3 – Saúde e Bem-Estar)*
+# React + Vite
 
----
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## 📖 Sobre o Projeto
-O **App Bem Estar** é uma plataforma voltada para o acompanhamento da saúde mental, especialmente entre **jovens universitários**.  
-O projeto nasceu da necessidade de oferecer suporte acessível e digital para monitoramento do **bem-estar emocional**, visando reduzir o impacto de:
+Currently, two official plugins are available:
 
-- Pressão acadêmica  
-- Estresse diário  
-- Distanciamento familiar  
-- Falta de suporte psicológico acessível  
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-A aplicação busca oferecer **autoavaliação diária**, **relatórios visuais**, **metas de autocuidado** e **acesso rápido a contatos de ajuda**, apoiando estudantes e profissionais da área.
+## React Compiler
 
----
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## ✨ Funcionalidades
-### Funcionais
-- ✅ Registro e login de usuários  
-- ✅ Autoavaliação diária (humor, energia, ansiedade, anotações)  
-- ✅ Relatórios semanais e mensais com gráficos  
-- ✅ Cadastro e acompanhamento de metas pessoais de autocuidado  
-- ✅ Acesso a conteúdos de autoajuda  
-- ✅ Área de suporte rápido (links e contatos de emergência)  
+## Expanding the ESLint configuration
 
-### Não Funcionais
-- 🔒 Segurança de dados (JWT, bcrypt, criptografia de senhas)  
-- 🎯 Usabilidade simples e acessível  
-- ⚡ API RESTful bem definida  
-- 🗄️ Banco de dados relacional  
-- 📱 Portabilidade (diferentes dispositivos)
-
----
-
-## 🛠️ Tecnologias Utilizadas
-### Arquitetura
-- **Front-End:** React.js + Vite + TailwindCSS  
-- **Back-End:** Node.js + Express.js  
-- **Banco de Dados:** MySQL + Sequelize (ORM)  
-- **Autenticação:** JWT  
-
-### Ferramentas de Apoio
-- GitHub → versionamento e organização de tarefas (Kanban: Backlog / Em andamento / Concluído)  
-- Google Docs → documentação colaborativa  
-- Google Meet / Discord → reuniões semanais  
-
----
-
-## 📊 Protótipos de Telas
-- **Login/Cadastro** → e-mail, senha e nome  
-- **Dashboard** → resumo semanal + botão rápido de autoavaliação  
-- **Autoavaliação** → escalas (humor, energia, ansiedade) + anotações  
-- **Relatórios** → gráficos de linhas e estatísticas semanais/mensais  
-- **Metas** → lista de metas com checkbox  
-- **Recursos de Apoio** → links, vídeos e números de emergência  
-
----
-
-## 🤝 Equipe
-- **Back-End & Banco de Dados:** Beatriz, Rafael e Gustavo  
-- **Front-End:** Gabriel, Leila e Kauan  
-- **Documentação:** Beatriz  
-
----
-
-## 🚀 Próximos Passos (Fase 2)
-- Finalizar protótipo das telas no Figma  
-- Implementar MVP do back-end (login + autoavaliações)  
-- Criar rotas CRUD para metas  
-- Conectar front-end básico ao back-end  
-- Validar protótipo com o professor (“cliente”)  
-
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
