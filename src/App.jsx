@@ -1,12 +1,23 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
 import Login from "./Login";
-import Navbar from "./components/Navbar";
+import Register from "./Register";
 
 function App() {
-  return <Login />;
+  const [currentPage, setCurrentPage] = useState("login");
+
+  const renderPage = () => {
+    switch (currentPage) {
+      case "login":
+        return <Login onNavigate={setCurrentPage} />;
+      case "register":
+        return <Register onNavigate={setCurrentPage} />;
+      default:
+        return <Login onNavigate={setCurrentPage} />;
+    }
+  };
+
+  return renderPage();
 }
 
-export default App
+export default App;
