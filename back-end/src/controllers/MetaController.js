@@ -2,6 +2,11 @@ require('dotenv').config();
 const MetaModel = require('../models/Meta');
 class MetaController {
 
+    /**
+       * Cria uma nova meta.
+       * @param {object} req - Requisição
+       * @param {object} res - Resposta
+       */
     async create(req, res) {
         try {
             const { descricao, link, dataConcDesejada } = req.body;
@@ -19,6 +24,12 @@ class MetaController {
         }
     }
 
+    /**
+       * Retorna todas as metas.
+       * @param {object} req - Requisição
+       * @param {object} res - Resposta
+       */
+
     async getAll(req, res) {
         try {
             const metas = await MetaModel.findAll();
@@ -28,6 +39,12 @@ class MetaController {
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
     }
+
+    /**
+       * Retorna uma meta pelo ID.
+       * @param {object} req - Requisição
+       * @param {object} res - Resposta
+       */
 
     async getById(req, res) {
         try {
@@ -43,14 +60,22 @@ class MetaController {
         }
     }
 
+    /**
+       * Atualiza uma meta.
+       * @param {object} req - Requisição
+       * @param {object} res - Resposta
+       */
+
     async update(req, res) {
         try {
             const { user_id, descricao, link, dataConcDesejada, status } = req.body;
             const meta = await MetaModel.update(
-                {   descricao: descricao,
+                {
+                    descricao: descricao,
                     link: link,
                     dataConcDesejada: dataConcDesejada,
-                    status: status },
+                    status: status
+                },
                 {
                     where: {
                         user_id: user_id
@@ -65,12 +90,16 @@ class MetaController {
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
     }
-
-    async markAsComplete(req, res){
+    /**
+       * Marca uma meta como concluída.
+       * @param {object} req - Requisição
+       * @param {object} res - Resposta
+       */
+    async markAsComplete(req, res) {
         try {
             const { user_id } = req.body;
             const meta = await MetaModel.update(
-                { dataConcluida: Date.now() },
+                { dataConcluida: Date.now(), status: 'concluída' },
                 {
                     where: {
                         user_id: user_id
@@ -85,7 +114,11 @@ class MetaController {
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
     }
-
+    /**
+   * Deleta uma meta.
+   * @param {object} req - Requisição
+   * @param {object} res - Resposta
+   */
     async delete(req, res) {
         try {
             const { user_id } = req.body;
