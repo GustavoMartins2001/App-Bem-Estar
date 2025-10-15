@@ -1,6 +1,9 @@
-import Navbar from "./components/Navbar";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
-export default function Login({ onNavigate }) {
+export default function Login() {
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Login submetido");
@@ -8,7 +11,7 @@ export default function Login({ onNavigate }) {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen relative pt-20">
-      <Navbar onNavigate={onNavigate} />
+      <Navbar />
 
       <header className="text-center mb-16">
         <h1 className="text-7xl font-extrabold mb-2 text-textoEscuro">
@@ -61,7 +64,7 @@ export default function Login({ onNavigate }) {
 
             <button
               type="button"
-              onClick={() => onNavigate("register")}
+              onClick={() => navigate("/register")}
               className="brilho bg-alerta rounded-full py-3 text-textoEscuro font-semibold hover:bg-alerta/80 transition"
             >
               Não possui conta? Clique aqui!

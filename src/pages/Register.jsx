@@ -1,6 +1,9 @@
-import Navbar from "./components/Navbar";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
-export default function Register({ onNavigate }) {
+export default function Register() {
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -21,7 +24,7 @@ export default function Register({ onNavigate }) {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen relative pt-20">
-      <Navbar onNavigate={onNavigate} />
+      <Navbar />
 
       <header className="text-center mb-10">
         <h1 className="text-6xl font-extrabold mb-2 text-textoEscuro">
@@ -87,7 +90,7 @@ export default function Register({ onNavigate }) {
 
             <button
               type="button"
-              onClick={() => onNavigate("login")}
+              onClick={() => navigate("/login")}
               className="brilho bg-fundoPrimario border-2 border-textoEscuro rounded-full py-3 text-textoEscuro font-semibold hover:bg-fundoPrimario/80 transition"
             >
               Já possui conta? Faça login!
