@@ -1,5 +1,5 @@
 require('dotenv').config();
-const MetaModel = require('../models/Meta');
+const MetaModel = require('../models/Meta').default;
 class MetaController {
 
     /**
