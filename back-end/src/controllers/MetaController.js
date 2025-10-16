@@ -1,55 +1,136 @@
-const Meta = require('../models/Meta');
+require('dotenv').config();
+const MetaModel = require('../models/Meta');
+class MetaController {
 
-module.exports = {
-  async listar(req, res) {
-    try {
-      const metas = await Meta.findAll();
-      res.json(metas);
-    } catch (error) {
-      res.status(500).json({ error: 'Erro ao listar metas' });
+    /**
+       * Cria uma nova meta.
+       * @param {object} req - Requisição
+       * @param {object} res - Resposta
+       */
+    async create(req, res) {
+        try {
+            const { descricao, link, dataConcDesejada } = req.body;
+            const meta = await MetaModel.create({
+                descricao: descricao,
+                link: link,
+                dataConcDesejada: dataConcDesejada,
+                dataConcluida: null,
+                created_at: new Date.now()
+            });
+            return res.status(201).json(meta);
+        } catch (error) {
+            console.error('Erro ao criar meta: ', error);
+            return res.status(500).json({ error: 'Erro interno do servidor' });
+        }
     }
-  },
 
-  async buscarPorId(req, res) {
-    try {
-      const meta = await Meta.findByPk(req.params.id);
-      if (!meta) return res.status(404).json({ error: 'Meta não encontrada' });
-      res.json(meta);
-    } catch (error) {
-      res.status(500).json({ error: 'Erro ao buscar meta' });
+    /**
+       * Retorna todas as metas.
+       * @param {object} req - Requisição
+       * @param {object} res - Resposta
+       */
+
+    async getAll(req, res) {
+        try {
+            const metas = await MetaModel.findAll();
+            return res.status(200).json(metas);
+        } catch (error) {
+            console.error('Erro ao buscar metas: ', error);
+            return res.status(500).json({ error: 'Erro interno do servidor' });
+        }
     }
-  },
 
-  async criar(req, res) {
-    try {
-      const novaMeta = await Meta.create(req.body);
-      res.status(201).json(novaMeta);
-    } catch (error) {
-      res.status(400).json({ error: 'Erro ao criar meta', details: error.message });
+    /**
+       * Retorna uma meta pelo ID.
+       * @param {object} req - Requisição
+       * @param {object} res - Resposta
+       */
+
+    async getById(req, res) {
+        try {
+            const { id } = req.params;
+            const meta = await MetaModel.findByPk(id);
+            if (!meta) {
+                return res.status(404).json({ error: 'Meta não encontrada' });
+            }
+            return res.status(200).json(meta);
+        } catch (error) {
+            console.error('Erro ao buscar meta: ', error);
+            return res.status(500).json({ error: 'Erro interno do servidor' });
+        }
     }
-  },
 
-  async atualizar(req, res) {
-    try {
-      const meta = await Meta.findByPk(req.params.id);
-      if (!meta) return res.status(404).json({ error: 'Meta não encontrada' });
+    /**
+       * Atualiza uma meta.
+       * @param {object} req - Requisição
+       * @param {object} res - Resposta
+       */
 
-      await meta.update(req.body);
-      res.json(meta);
-    } catch (error) {
-      res.status(400).json({ error: 'Erro ao atualizar meta', details: error.message });
+    async update(req, res) {
+        try {
+            const { user_id, descricao, link, dataConcDesejada, status } = req.body;
+            const meta = await MetaModel.update(
+                {
+                    descricao: descricao,
+                    link: link,
+                    dataConcDesejada: dataConcDesejada,
+                    status: status
+                },
+                {
+                    where: {
+                        user_id: user_id
+                    }
+                }
+            );
+            return res.status(201).json(meta);
+        }
+
+        catch (error) {
+            console.error('Erro ao atualizar meta: ', error);
+            return res.status(500).json({ error: 'Erro interno do servidor' });
+        }
     }
-  },
+    /**
+       * Marca uma meta como concluída.
+       * @param {object} req - Requisição
+       * @param {object} res - Resposta
+       */
+    async markAsComplete(req, res) {
+        try {
+            const { user_id } = req.body;
+            const meta = await MetaModel.update(
+                { dataConcluida: Date.now(), status: 'concluída' },
+                {
+                    where: {
+                        user_id: user_id
+                    }
+                }
+            );
+            return res.status(201).json(meta);
+        }
 
-  async deletar(req, res) {
-    try {
-      const meta = await Meta.findByPk(req.params.id);
-      if (!meta) return res.status(404).json({ error: 'Meta não encontrada' });
-
-      await meta.destroy();
-      res.status(204).send();
-    } catch (error) {
-      res.status(500).json({ error: 'Erro ao deletar meta' });
+        catch (error) {
+            console.error('Erro ao atualizar meta: ', error);
+            return res.status(500).json({ error: 'Erro interno do servidor' });
+        }
     }
-  },
-};
+    /**
+   * Deleta uma meta.
+   * @param {object} req - Requisição
+   * @param {object} res - Resposta
+   */
+    async delete(req, res) {
+        try {
+            const { user_id } = req.body;
+            await MetaModel.destroy({
+                where: {
+                    user_id: user_id
+                }
+            });
+            return res.status(204).send();
+        } catch (error) {
+            console.error('Erro ao deletar meta: ', error);
+            return res.status(500).json({ error: 'Erro interno do servidor' });
+        }
+    }
+}

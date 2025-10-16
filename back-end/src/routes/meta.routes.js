@@ -1,11 +1,13 @@
-const express = require('express');
-const router = express.Router();
+const { Router } = require('express');
 const MetaController = require('../controllers/MetaController');
 
-router.get('/', MetaController.listar);
-router.get('/:id', MetaController.buscarPorId);
-router.post('/', MetaController.criar);
-router.put('/:id', MetaController.atualizar);
-router.delete('/:id', MetaController.deletar);
+const metaRoutes = Router();
 
-module.exports = router;
+metaRoutes.post('/meta', MetaController.create);
+metaRoutes.get('/meta', MetaController.getAll);
+metaRoutes.get('/meta/:id', MetaController.getById);
+metaRoutes.put('/meta/:id', MetaController.update);
+metaRoutes.patch('/meta/:id', MetaController.markAsComplete);
+metaRoutes.delete('/meta/:id', MetaController.delete);
+
+module.exports = metaRoutes;

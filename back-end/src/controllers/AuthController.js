@@ -12,6 +12,9 @@ class AuthController {
    * @param {object} req - Requisição
    * @param {object} res - Resposta
    */
+
+    //TODO: se der tempo, passar a logica de autenticacao para um middleware.
+
   async register(req, res) {
     const { name, email, password } = req.body;
 
