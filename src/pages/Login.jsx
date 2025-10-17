@@ -10,10 +10,10 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen relative pt-20">
+    <div className="bg-gradiente min-h-screen flex flex-col items-center justify-center">
       <Navbar />
 
-      <header className="text-center mb-16">
+      <header className="text-center mb-16 mt-16">
         <h1 className="text-7xl font-extrabold mb-2 text-textoEscuro">
           App Bem-Estar
         </h1>

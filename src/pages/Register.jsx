@@ -23,10 +23,10 @@ export default function Register() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen relative pt-20">
+    <div className="bg-gradiente flex flex-col items-center justify-center min-h-screen">
       <Navbar />
 
-      <header className="text-center mb-10">
+      <header className="text-center mb-10 mt-20">
         <h1 className="text-6xl font-extrabold mb-2 text-textoEscuro">
           Criar Conta
         </h1>

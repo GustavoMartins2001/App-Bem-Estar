@@ -8,7 +8,7 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 w-full flex justify-between items-center px-8 py-3 bg-textoEscuro z-50">
       <h1
         className="text-3xl text-fundoSecundario font-extrabold cursor-pointer"
-        onClick={() => navigate("/login")}
+        onClick={() => navigate("/")}
       >
         🌱 Bem-Estar
       </h1>
