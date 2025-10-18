@@ -1,22 +1,22 @@
 {
   "development": {
     "username": "root",
-    "password": null,
-    "database": "database_development",
+    "password": "senha123",
+    "database": "projeto",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "test": {
     "username": "root",
     "password": null,
-    "database": "database_test",
+    "database": "senha123",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
+    "username": "senha123",
     "password": null,
-    "database": "database_production",
+    "database": "projeto",
     "host": "127.0.0.1",
     "dialect": "mysql"
   }
