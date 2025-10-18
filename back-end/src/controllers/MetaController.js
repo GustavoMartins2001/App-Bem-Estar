@@ -1,6 +1,6 @@
 require('dotenv').config();
 const MetaModel = require('../models/Meta');
-class MetaController {
+module.exports = {
 
     /**
        * Cria uma nova meta.
@@ -22,7 +22,7 @@ class MetaController {
             console.error('Erro ao criar meta: ', error);
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
-    }
+    },
 
     /**
        * Retorna todas as metas.
@@ -38,7 +38,7 @@ class MetaController {
             console.error('Erro ao buscar metas: ', error);
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
-    }
+    },
 
     /**
        * Retorna uma meta pelo ID.
@@ -58,7 +58,7 @@ class MetaController {
             console.error('Erro ao buscar meta: ', error);
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
-    }
+    },
 
     /**
        * Atualiza uma meta.
@@ -89,7 +89,7 @@ class MetaController {
             console.error('Erro ao atualizar meta: ', error);
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
-    }
+    },
     /**
        * Marca uma meta como concluída.
        * @param {object} req - Requisição
@@ -113,7 +113,7 @@ class MetaController {
             console.error('Erro ao atualizar meta: ', error);
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
-    }
+    },
     /**
    * Deleta uma meta.
    * @param {object} req - Requisição

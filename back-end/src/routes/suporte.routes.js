@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const suporteController = require('../controllers/suporte.controller');
+const suporteController = require('../controllers/SuporteController');
 
 router.get('/', suporteController.listar);
 router.post('/', suporteController.criar);

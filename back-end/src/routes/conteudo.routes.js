@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const conteudoController = require('../controllers/conteudo.controller');
+const conteudoController = require('../controllers/ConteudoController');
 
 router.get('/', conteudoController.listar);
 router.post('/', conteudoController.criar);

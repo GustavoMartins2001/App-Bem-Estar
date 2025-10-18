@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/autoavaliacao.controller');
+const controller = require('../controllers/AutoavaliacaoController');
 
 router.post('/', controller.criar);
 router.get('/:usuario_id', controller.listarPorUsuario);

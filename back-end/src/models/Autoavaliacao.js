@@ -1,34 +1,51 @@
-module.exports = (sequelize, DataTypes) => {
-  const Autoavaliacao = sequelize.define('Autoavaliacao', {
-    usuario_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    humor: {
-      type: DataTypes.INTEGER, 
-      allowNull: false,
-    },
-    energia: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    ansiedade: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    anotacoes: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
-    dataRegistro: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-  }, {
-    tableName: 'autoavaliacoes',
-    timestamps: false,
-  });
 
-  return Autoavaliacao;
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class AutoAvaliacao extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+    }
+  }
+  AutoAvaliacao.init({
+    id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  usuario_id: {
+    type: DataTypes.INTEGER,
+    foreignKey: true,
+  },
+  avaliacaoEnergia: {
+    type: DataTypes.INTEGER,
+  },
+  avaliacaoHumor: {
+    type: DataTypes.INTEGER,
+  },
+  avaliacaoAnsiedade: {
+    type: DataTypes.INTEGER,
+  },
+  status: {
+    type: DataTypes.ENUM('pendente', 'avaliada'),
+  },
+  data: {
+    type: DataTypes.DATE,
+  },
+  created_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
+  }, {
+    sequelize,
+    modelName: 'AutoAvaliacao',
+  });
+  return AutoAvaliacao;
 };
