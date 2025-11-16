@@ -6,14 +6,15 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Login submetido");
+    // Por enquanto, apenas redireciona para o dashboard
+    navigate("/dashboard");
   };
 
   return (
-    <div className="bg-gradiente min-h-screen flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center min-h-screen relative pt-20">
       <Navbar />
 
-      <header className="text-center mb-16 mt-16">
+      <header className="text-center mb-16">
         <h1 className="text-7xl font-extrabold mb-2 text-textoEscuro">
           App Bem-Estar
         </h1>
