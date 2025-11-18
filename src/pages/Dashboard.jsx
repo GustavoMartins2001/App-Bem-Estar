@@ -1,10 +1,18 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import NavbarDashboard from "../components/NavbarDashboard";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Dashboard() {
+  const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const [userName] = useState("Leila");
+  const userName = user?.name || "Usuário";
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate]);
 
   const stats = {
     mediaHumor: 4.2,
@@ -76,6 +84,7 @@ export default function Dashboard() {
   ];
 
   const handleLogout = () => {
+    logout();
     navigate("/login");
   };
 

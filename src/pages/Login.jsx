@@ -1,13 +1,36 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if(isAuthenticated()){
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Por enquanto, apenas redireciona para o dashboard
-    navigate("/dashboard");
+    setError("");
+    setIsLoading(true);
+
+    const result = await login(email, password);
+
+    if(result.success){
+      navigate("/dashboard");
+    } else {
+      setError(result.error || "Erro ao fazer login. Tente novamente.");
+    }
+
+    setIsLoading(false);
   };
 
   return (
@@ -35,18 +58,30 @@ export default function Login() {
 
         <div className="bg-fundoSecundario shadow-lg rounded-3xl p-10 md:w-1/2 w-full">
           <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+            {error && (
+              <div className="bg-red-100 border-2 border-red-400 text-red-700 px-4 py-3 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
+
             <input
               type="email"
               placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="border-2 border-textoEscuro rounded-full px-5 py-3 w-full focus:outline-none focus:border-destaqueAcao transition"
               required
+              disabled={isLoading}
             />
             <div>
               <input
                 type="password"
                 placeholder="Senha"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="border-2 border-textoEscuro rounded-full px-5 py-3 w-full focus:outline-none focus:border-destaqueAcao transition"
                 required
+                disabled={isLoading}
               />
               <p className="text-sm text-textoEscuro mt-2 text-center">
                 Esqueceu a senha?{" "}
@@ -58,9 +93,10 @@ export default function Login() {
 
             <button
               type="submit"
+              disabled={isLoading}
               className="brilho bg-destaqueAcao rounded-full py-3 text-textoEscuro font-semibold hover:bg-destaqueAcao/80 transition"
             >
-              Entrar
+              {isLoading ? "Entrando..." : "Entrar"}
             </button>
 
             <button
