@@ -1,11 +1,19 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Register() {
   const navigate = useNavigate();
+  const { register } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault(); 
+    setError("");
+    setIsLoading(true);
+
     const formData = new FormData(e.target);
     const data = {
       name: formData.get("name"),
@@ -15,11 +23,19 @@ export default function Register() {
     };
 
     if (data.password !== data.confirmPassword) {
-      alert("As senhas não coincidem!");
+      setError("As senhas não coincidem!");
+      setIsLoading(false);
       return;
     }
+    
+    const result = await register(data.name, data.email, data.password); 
+    if(result.success){
+      navigate("/dashboard");
+    } else {
+      setError(result.error || "Erro ao criar conta. Tente novamente.");
+    }
 
-    console.log("Registro submetido:", data);
+    setIsLoading(false);
   };
 
   return (
@@ -50,12 +66,19 @@ export default function Register() {
 
         <div className="bg-fundoSecundario shadow-lg rounded-3xl p-10 md:w-1/2 w-full">
           <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+            {error && (
+              <div className="bg-red-100 border-2 border-red-400 text-red-700 px-4 py-3 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
+
             <input
               type="text"
               name="name"
               placeholder="Nome Completo"
               className="border-2 border-textoEscuro rounded-full px-5 py-3 w-full focus:outline-none focus:border-destaqueAcao transition"
               required
+              disabled={isLoading}
             />
             <input
               type="email"
@@ -63,6 +86,7 @@ export default function Register() {
               placeholder="Email"
               className="border-2 border-textoEscuro rounded-full px-5 py-3 w-full focus:outline-none focus:border-destaqueAcao transition"
               required
+              disabled={isLoading}
             />
             <input
               type="password"
@@ -71,6 +95,7 @@ export default function Register() {
               className="border-2 border-textoEscuro rounded-full px-5 py-3 w-full focus:outline-none focus:border-destaqueAcao transition"
               required
               minLength="6"
+              disabled={isLoading}
             />
             <input
               type="password"
@@ -79,13 +104,15 @@ export default function Register() {
               className="border-2 border-textoEscuro rounded-full px-5 py-3 w-full focus:outline-none focus:border-destaqueAcao transition"
               required
               minLength="6"
+              disabled={isLoading}
             />
 
             <button
               type="submit"
+              disabled={isLoading}
               className="brilho bg-destaqueAcao rounded-full py-3 text-textoEscuro font-semibold hover:bg-destaqueAcao/80 transition"
             >
-              Criar Conta
+              {isLoading ? "Criando conta..." : "Criar Conta"}
             </button>
 
             <button

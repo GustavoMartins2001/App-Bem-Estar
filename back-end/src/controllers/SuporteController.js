@@ -1,4 +1,4 @@
-const Suporte = require('../models/Suporte');
+const { Suporte } = require('../models');
 
 module.exports = {
   async listar(req, res) {

@@ -10,12 +10,7 @@ const relatorioRoutes = require('./src/routes/relatorio.routes');
 const conteudoRoutes = require('./src/routes/conteudo.routes');
 const suporteRoutes = require('./src/routes/suporte.routes');
 
-const User = require('./src/models/User');
-const Meta = require('./src/models/Meta');
-const Autoavaliacao = require('./src/models/Autoavaliacao');
-const Relatorio = require('./src/models/Relatorio'); 
-const Conteudo = require('./src/models/conteudo');
-const Suporte = require('./src/models/Suporte');
+const { User, Meta, Autoavaliacao, Relatorio, Conteudo, Suporte } = require('./src/models');
 
 const app = express();
 const PORT = process.env.PORT || 3333;

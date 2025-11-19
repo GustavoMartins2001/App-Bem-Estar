@@ -1,4 +1,4 @@
-const Autoavaliacao = require('../models/Autoavaliacao');
+const { Autoavaliacao } = require('../models');
 
 module.exports = {
   async criar(req, res) {
