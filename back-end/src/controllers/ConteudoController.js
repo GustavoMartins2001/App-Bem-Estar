@@ -1,4 +1,4 @@
-const Conteudo = require('../models/conteudo');
+const Conteudo = require('../models/Conteudo');
 
 module.exports = {
   async listar(req, res) {
