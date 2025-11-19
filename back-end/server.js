@@ -7,14 +7,14 @@ const authRoutes = require('./src/routes/auth.routes');
 const metaRoutes = require('./src/routes/meta.routes');
 const autoavaliacaoRoutes = require('./src/routes/autoavaliacao.routes');
 const relatorioRoutes = require('./src/routes/relatorio.routes');
-const conteudoRoutes = require('./src/routes/Conteudo.routes');
+const conteudoRoutes = require('./src/routes/conteudo.routes');
 const suporteRoutes = require('./src/routes/suporte.routes');
 
 const User = require('./src/models/User');
 const Meta = require('./src/models/Meta');
 const Autoavaliacao = require('./src/models/Autoavaliacao');
 const Relatorio = require('./src/models/Relatorio'); 
-const Conteudo = require('./src/models/conteudo');
+const Conteudo = require('./src/models/Conteudo');
 const Suporte = require('./src/models/Suporte');
 
 const app = express();
