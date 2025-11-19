@@ -1,5 +1,5 @@
 require('dotenv').config();
-const MetaModel = require('../models/Meta');
+const { Meta } = require('../models');
 module.exports = {
 
     /**
@@ -10,12 +10,12 @@ module.exports = {
     async create(req, res) {
         try {
             const { descricao, link, dataConcDesejada } = req.body;
-            const meta = await MetaModel.create({
+            const meta = await Meta.create({
                 descricao: descricao,
                 link: link,
                 dataConcDesejada: dataConcDesejada,
                 dataConcluida: null,
-                created_at: new Date.now()
+                created_at: new Date()
             });
             return res.status(201).json(meta);
         } catch (error) {
@@ -32,7 +32,7 @@ module.exports = {
 
     async getAll(req, res) {
         try {
-            const metas = await MetaModel.findAll();
+            const metas = await Meta.findAll();
             return res.status(200).json(metas);
         } catch (error) {
             console.error('Erro ao buscar metas: ', error);
@@ -49,7 +49,7 @@ module.exports = {
     async getById(req, res) {
         try {
             const { id } = req.params;
-            const meta = await MetaModel.findByPk(id);
+            const meta = await Meta.findByPk(id);
             if (!meta) {
                 return res.status(404).json({ error: 'Meta não encontrada' });
             }
@@ -69,7 +69,7 @@ module.exports = {
     async update(req, res) {
         try {
             const { user_id, descricao, link, dataConcDesejada, status } = req.body;
-            const meta = await MetaModel.update(
+            const meta = await Meta.update(
                 {
                     descricao: descricao,
                     link: link,
@@ -98,7 +98,7 @@ module.exports = {
     async markAsComplete(req, res) {
         try {
             const { user_id } = req.body;
-            const meta = await MetaModel.update(
+            const meta = await Meta.update(
                 { dataConcluida: Date.now(), status: 'concluída' },
                 {
                     where: {
@@ -122,7 +122,7 @@ module.exports = {
     async delete(req, res) {
         try {
             const { user_id } = req.body;
-            await MetaModel.destroy({
+            await Meta.destroy({
                 where: {
                     user_id: user_id
                 }

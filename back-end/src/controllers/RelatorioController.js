@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-const Autoavaliacao = require("../models/Autoavaliacao");
+const { Autoavaliacao } = require("../models");
 
 exports.getRelatorioSemanal = async (req, res) => {
   try {
@@ -59,9 +59,9 @@ function calcularMedias(avaliacoes) {
   const total = avaliacoes.length;
   const soma = avaliacoes.reduce(
     (acc, a) => ({
-      humor: acc.humor + a.humor,
-      energia: acc.energia + a.energia,
-      ansiedade: acc.ansiedade + a.ansiedade,
+      humor: acc.humor + a.avaliacaoHumor,
+      energia: acc.energia + a.avaliacaoEnergia,
+      ansiedade: acc.ansiedade + a.avaliacaoAnsiedade,
     }),
     { humor: 0, energia: 0, ansiedade: 0 }
   );
