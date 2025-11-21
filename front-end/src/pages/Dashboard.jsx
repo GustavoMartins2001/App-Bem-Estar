@@ -78,8 +78,8 @@ export default function Dashboard() {
               meta.status !== "concluída"
           )
           .sort((a, b) => {
-            const dataA = new Date(a.dataConcDesejada || 0);
-            const dataB = new Date(b.dataConcDesejada || 0);
+            const dataA = new Date(a.dataConclusaoDesejada || a.dataConcDesejada || 0);
+            const dataB = new Date(b.dataConclusaoDesejada || b.dataConcDesejada || 0);
             return dataA - dataB;
           });
 
@@ -320,9 +320,9 @@ export default function Dashboard() {
                       ✓ Concluir
                     </button>
                   </div>
-                  {meta.dataConcDesejada && (
+                  {(meta.dataConclusaoDesejada || meta.dataConcDesejada) && (
                     <span className="text-sm text-textoEscuro/60">
-                    📅 Meta: {formatarData(meta.dataConcDesejada)}
+                    📅 Meta: {formatarData(meta.dataConclusaoDesejada || meta.dataConcDesejada)}
                   </span>
                   )}
                 </div>
