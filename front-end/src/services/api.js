@@ -21,7 +21,7 @@ async function request(endpoint, options = {}) {
         const data =  await response.json();
 
         if(!response.ok){
-            throw new Error(data.error || 'Erro na requisição');
+            throw new Error(data.error || data.message || 'Erro na requisição');
         }
 
         return data;
@@ -44,6 +44,25 @@ export const authService = {
             body: JSON.stringify({ email, password}),
         });
     },
+};
+
+export const dashboardService = {
+
+    async getAutoavaliacoes(usuario_id){
+        return request(`/autoavaliacoes/${usuario_id}`);
+    },
+
+    async getMetas(){
+        return request('/metas/meta');
+    },
+
+    async getRelatorioSemanal(usuario_id){
+        return request(`/relatorios/semana/${usuario_id}`);
+    },
+
+    async getRelatorioMensal(usuario_id){
+        return request(`/relatorios/mes/${usuario_id}`);
+    }
 };
 
 export default request;
