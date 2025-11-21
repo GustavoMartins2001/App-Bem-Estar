@@ -25,10 +25,68 @@ app.use('/api/relatorios', relatorioRoutes);
 app.use('/api/conteudos', conteudoRoutes);
 app.use('/api/suportes', suporteRoutes);
 
+async function runMigrations() {
+  try {
+    const path = require('path');
+    const fs = require('fs');
+    const migrationsPath = path.join(__dirname, 'src', 'migrations');
+    
+    if (!fs.existsSync(migrationsPath)) {
+      return;
+    }
+
+    // Cria tabela de controle de migrations se não existir
+    await sequelize.query(`
+      CREATE TABLE IF NOT EXISTS SequelizeMeta (
+        name VARCHAR(255) NOT NULL PRIMARY KEY
+      )
+    `).catch(() => {});
+
+    // Busca migrations já executadas
+    const [executedMigrations] = await sequelize.query(`
+      SELECT name FROM SequelizeMeta
+    `).catch(() => [[]]);
+    
+    const executedNames = executedMigrations.map(m => m.name);
+
+    // Lista todos os arquivos de migration
+    const migrationFiles = fs.readdirSync(migrationsPath)
+      .filter(file => file.endsWith('.js') && file !== 'rename-meta-userid-to-usuario-id.js')
+      .sort();
+
+    // Executa migration de renomeação de coluna se ainda não foi executada
+    const renameMigrationName = 'rename-meta-userid-to-usuario-id';
+    if (!executedNames.includes(renameMigrationName)) {
+      try {
+        const renameMigration = require(path.join(migrationsPath, 'rename-meta-userid-to-usuario-id.js'));
+        await renameMigration.up(sequelize.getQueryInterface(), sequelize.constructor);
+        
+        // Registra migration como executada
+        await sequelize.query(`
+          INSERT INTO SequelizeMeta (name) VALUES ('${renameMigrationName}')
+        `).catch(() => {});
+        
+        console.log('✅ Migration de renomeação de coluna executada.');
+      } catch (error) {
+        // Se a coluna já foi renomeada ou não existe, apenas registra
+        console.log('ℹ️  Migration de renomeação: ' + (error.message.includes('Unknown column') ? 'Coluna já renomeada ou não existe' : error.message));
+        await sequelize.query(`
+          INSERT INTO SequelizeMeta (name) VALUES ('${renameMigrationName}')
+        `).catch(() => {});
+      }
+    }
+  } catch (error) {
+    console.log('⚠️  Aviso ao executar migrations:', error.message);
+  }
+}
+
 async function connectToDatabase() {
   try {
     await sequelize.authenticate();
     console.log('✅ Conexão com o Banco de Dados estabelecida com sucesso.');
+
+    // Executa migrations antes de sincronizar
+    await runMigrations();
 
     await sequelize.sync();
     console.log('✅ Modelos sincronizados com o Banco de Dados.');

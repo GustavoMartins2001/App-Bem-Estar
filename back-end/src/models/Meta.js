@@ -21,7 +21,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     usuario_id: {
       type: DataTypes.INTEGER,
-      foreignKey: true,
+      allowNull: true,
+    },
+    titulo: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     descricao: {
       type: DataTypes.STRING,
@@ -31,19 +35,25 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM('pendente', 'concluida', 'cancelada'),
       allowNull: false,
     },
-    dataConcDesejada: {
+    dataConclusaoDesejada: {
       type: DataTypes.DATE,
+      field: 'dataConclusaoDesejada', // Nome da coluna no banco
     },
-    dataConcluida: {
+    criado_em: {
       type: DataTypes.DATE,
-    },
-    created_at: {
-      type: DataTypes.DATE,
+      field: 'criado_em', // Nome da coluna no banco
       defaultValue: DataTypes.NOW,
+    },
+    atualizado_em: {
+      type: DataTypes.DATE,
+      field: 'atualizado_em', // Nome da coluna no banco
     },
   }, {
     sequelize,
     modelName: 'Meta',
+    tableName: 'Meta',
+    timestamps: false, // Desabilitado porque usamos criado_em e atualizado_em manualmente
+    underscored: false,
   });
   return Meta;
 };

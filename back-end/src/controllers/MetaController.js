@@ -9,13 +9,15 @@ module.exports = {
        */
     async create(req, res) {
         try {
-            const { descricao, link, dataConcDesejada } = req.body;
+            const { usuario_id, titulo, descricao, dataConclusaoDesejada, status } = req.body;
             const meta = await Meta.create({
+                usuario_id: usuario_id,
+                titulo: titulo || null,
                 descricao: descricao,
-                link: link,
-                dataConcDesejada: dataConcDesejada,
-                dataConcluida: null,
-                created_at: new Date()
+                dataConclusaoDesejada: dataConclusaoDesejada || null,
+                status: status || 'pendente',
+                criado_em: new Date(),
+                atualizado_em: new Date()
             });
             return res.status(201).json(meta);
         } catch (error) {
@@ -68,24 +70,27 @@ module.exports = {
 
     async update(req, res) {
         try {
-            const { user_id, descricao, link, dataConcDesejada, status } = req.body;
+            const { id } = req.params;
+            const { usuario_id, titulo, descricao, dataConclusaoDesejada, status } = req.body;
+            
+            const updateData = {};
+            if (usuario_id !== undefined) updateData.usuario_id = usuario_id;
+            if (titulo !== undefined) updateData.titulo = titulo;
+            if (descricao !== undefined) updateData.descricao = descricao;
+            if (dataConclusaoDesejada !== undefined) updateData.dataConclusaoDesejada = dataConclusaoDesejada;
+            if (status !== undefined) updateData.status = status;
+            updateData.atualizado_em = new Date();
+
             const meta = await Meta.update(
-                {
-                    descricao: descricao,
-                    link: link,
-                    dataConcDesejada: dataConcDesejada,
-                    status: status
-                },
+                updateData,
                 {
                     where: {
-                        user_id: user_id
+                        id: id
                     }
                 }
             );
-            return res.status(201).json(meta);
-        }
-
-        catch (error) {
+            return res.status(200).json(meta);
+        } catch (error) {
             console.error('Erro ao atualizar meta: ', error);
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
@@ -97,19 +102,20 @@ module.exports = {
        */
     async markAsComplete(req, res) {
         try {
-            const { user_id } = req.body;
+            const { id } = req.params;
             const meta = await Meta.update(
-                { dataConcluida: Date.now(), status: 'concluída' },
+                { 
+                    status: 'concluida',
+                    atualizado_em: new Date()
+                },
                 {
                     where: {
-                        user_id: user_id
+                        id: id
                     }
                 }
             );
-            return res.status(201).json(meta);
-        }
-
-        catch (error) {
+            return res.status(200).json(meta);
+        } catch (error) {
             console.error('Erro ao atualizar meta: ', error);
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
@@ -121,10 +127,10 @@ module.exports = {
    */
     async delete(req, res) {
         try {
-            const { user_id } = req.body;
+            const { id } = req.params;
             await Meta.destroy({
                 where: {
-                    user_id: user_id
+                    id: id
                 }
             });
             return res.status(204).send();
