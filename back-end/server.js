@@ -15,7 +15,7 @@ const { User, Meta, Autoavaliacao, Relatorio, Conteudo, Suporte } = require('./s
 const app = express();
 const PORT = process.env.PORT || 3333;
 
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ origin: 'https://app-bem-estar-1.onrender.com' }));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
