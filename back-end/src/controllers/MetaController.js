@@ -25,6 +25,25 @@ module.exports = {
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
     },
+    //Usado para criar varias metas de uma vez (apenas IA)
+    async createMany(metasJson) {
+        try {
+            const metaArray = JSON.parse(metaArrayJson);
+            for (const meta of metaArray) {
+                const meta = await MetaModel.create({
+                    link: link,
+                    descricao: descricao,
+                    dataConcDesejada: dataConcDesejada,
+                    dataConcluida: null,
+                    created_at: new Date.now()
+                })
+            };
+            return res.status(201).json(metaArray);
+        } catch (error) {
+            console.error('Erro ao criar metas: ', error);
+            return res.status(500).json({ error: 'Erro interno do servidor' });
+        }
+    },
 
     /**
        * Retorna todas as metas.
