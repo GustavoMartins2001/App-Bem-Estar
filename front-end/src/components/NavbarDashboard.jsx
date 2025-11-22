@@ -42,6 +42,17 @@ export default function NavbarDashboard({ userName, onLogout }) {
           Metas
         </button>
 
+        <button
+          onClick={() => navigate("/support")}
+          className={`px-4 py-2 rounded-full font-semibold transition ${
+            location.pathname === "/support"
+              ? "bg-destaqueAcao text-textoEscuro"
+              : "text-fundoSecundario hover:text-destaqueAcao"
+          }`}
+        >
+          Apoio
+        </button>
+
         <div className="flex items-center gap-2 px-4 py-2 bg-fundoPrimario/20 rounded-full">
           <span className="text-xl">👤</span>
           <span className="text-fundoSecundario font-medium">{userName}</span>

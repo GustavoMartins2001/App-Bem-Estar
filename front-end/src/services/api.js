@@ -65,4 +65,10 @@ export const dashboardService = {
     }
 };
 
+export const supportService = {
+    async getRecursosApoio(){
+        return request('/suportes');
+    }
+};
+
 export default request;
