@@ -63,7 +63,7 @@ export default function HomePublic() {
                 <Sprout className="mx-auto text-[#71ab59] w-10 h-10 mb-4"/>
                 <h2 className="text-2xl font-bold mb-4">Comece Hoje!</h2>
                 <p>Faça seu cadastro e dê o primeiro passo para seu autocuidado!</p>
-                <a href="/register" class="brilho bg-destaqueAcao text-white font-semibold px-10 py-1 rounded-2xl mt-4 inline-block"
+                <a href="/register" className="brilho bg-destaqueAcao text-white font-semibold px-10 py-1 rounded-2xl mt-4 inline-block"
                 >Cadastre-se</a>
             </div>
 
@@ -88,13 +88,13 @@ export default function HomePublic() {
                 </p>
             </div>
             <motion.img
-                src="../public/charlie-brown.png"
+                src="/charlie-brown.png"
+                alt="Charlie Brown"
                 className="w-80 md:w-[400px] flex-shrink-0 drop-shadow-xl"
                 initial={{ opacity: 0, x: 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 1.2 }}
-            >
-            </motion.img>
+            />
         </div>
         </motion.section>
 
