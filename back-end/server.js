@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { OpenAI } = require("openai");
 const express = require('express');
 const cors = require('cors');
 const sequelize = require('./src/config/database');
@@ -9,6 +10,7 @@ const autoavaliacaoRoutes = require('./src/routes/autoavaliacao.routes');
 const relatorioRoutes = require('./src/routes/relatorio.routes');
 const conteudoRoutes = require('./src/routes/conteudo.routes');
 const suporteRoutes = require('./src/routes/suporte.routes');
+const chatgptRoutes = require('./src/routes/chatgpt.routes');
 
 const User = require('./src/models/User');
 const Meta = require('./src/models/Meta');
@@ -29,6 +31,9 @@ app.use('/api/autoavaliacoes', autoavaliacaoRoutes);
 app.use('/api/relatorios', relatorioRoutes); 
 app.use('/api/conteudos', conteudoRoutes);
 app.use('/api/suportes', suporteRoutes);
+
+const chatGptClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+app.use('/api/chatgpt', chatgptRoutes(chatGptClient)); //inicia chatGptClient apenas uma vez e injeta aqui
 
 async function connectToDatabase() {
   try {
