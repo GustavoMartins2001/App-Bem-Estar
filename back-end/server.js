@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { OpenAI } = require("openai");
 const express = require('express');
 const cors = require('cors');
 const sequelize = require('./src/config/database');
@@ -9,14 +10,17 @@ const autoavaliacaoRoutes = require('./src/routes/autoavaliacao.routes');
 const relatorioRoutes = require('./src/routes/relatorio.routes');
 const conteudoRoutes = require('./src/routes/conteudo.routes');
 const suporteRoutes = require('./src/routes/suporte.routes');
+const chatgptRoutes = require('./src/routes/chatgpt.routes');
 
 const { User, Meta, Autoavaliacao, Relatorio, Conteudo, Suporte } = require('./src/models');
 
+const chatGptClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const app = express();
 const PORT = process.env.PORT || 3333;
 
 app.use(cors({ origin: 'https://app-bem-estar-1.onrender.com' }));
 app.use(express.json());
+
 
 app.use('/api/auth', authRoutes);
 app.use('/api/metas', metaRoutes);
@@ -24,6 +28,7 @@ app.use('/api/autoavaliacoes', autoavaliacaoRoutes);
 app.use('/api/relatorios', relatorioRoutes); 
 app.use('/api/conteudos', conteudoRoutes);
 app.use('/api/suportes', suporteRoutes);
+app.use('/api/chatgpt', chatgptRoutes(chatGptClient)); //inicia chatGptClient apenas uma vez e injeta aqui
 
 async function runMigrations() {
   try {
@@ -79,6 +84,8 @@ async function runMigrations() {
     console.log('⚠️  Aviso ao executar migrations:', error.message);
   }
 }
+
+
 
 async function connectToDatabase() {
   try {
