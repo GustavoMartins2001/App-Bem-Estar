@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Reports from "./pages/Reports";
 import SupportResources from "./pages/SupportResources";
 import SelfEvaluation from "./pages/SelfEvaluation";
+import Metas from "./pages/Metas";
 
 
 
@@ -22,6 +23,7 @@ function App() {
           <Route path="/reports" element={<Reports />} />
           <Route path="/support" element={<SupportResources />} />
           <Route path="/self-evaluation" element={<SelfEvaluation />} />"
+          <Route path="/meta" element={<Metas />} />"
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
