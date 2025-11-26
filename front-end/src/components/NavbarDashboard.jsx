@@ -38,7 +38,8 @@ export default function NavbarDashboard({ userName, onLogout }) {
           Avaliação
         </button>
 
-        <button className="px-4 py-2 rounded-full font-semibold transition text-fundoSecundario hover:text-destaqueAcao">
+        <button onClick={() => navigate("/meta")}
+        className="px-4 py-2 rounded-full font-semibold transition text-fundoSecundario hover:text-destaqueAcao">
           Metas
         </button>
 
