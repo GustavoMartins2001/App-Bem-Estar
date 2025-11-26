@@ -18,7 +18,7 @@ const chatGptClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const app = express();
 const PORT = process.env.PORT || 3333;
 
-app.use(cors({ origin: 'https://app-bem-estar-1.onrender.com' }));
+app.use(cors());
 app.use(express.json());
 
 
