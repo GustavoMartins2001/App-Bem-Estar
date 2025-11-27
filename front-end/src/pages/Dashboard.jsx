@@ -244,7 +244,9 @@ export default function Dashboard() {
             <span className="text-2xl">➕</span>
             Nova Autoavaliação
           </button>
-          <button className="brilho bg-alerta hover:bg-alerta/80 text-textoEscuro font-bold py-6 px-8 rounded-2xl shadow-lg hover:shadow-xl transition flex items-center justify-center gap-3">
+          <button 
+          onClick={() => navigate("/meta")}
+          className="brilho bg-alerta hover:bg-alerta/80 text-textoEscuro font-bold py-6 px-8 rounded-2xl shadow-lg hover:shadow-xl transition flex items-center justify-center gap-3">
             <span className="text-2xl">🎯</span>
             Gerenciar Metas
           </button>

@@ -46,6 +46,15 @@ export const authService = {
     },
 };
 
+export const autoavaliacaoService = {
+    async criar(dados) {
+        return request('/autoavaliacoes', {
+            method: 'POST',
+            body: JSON.stringify(dados)
+        });
+    }
+}
+
 export const dashboardService = {
 
     async getAutoavaliacoes(usuario_id){
