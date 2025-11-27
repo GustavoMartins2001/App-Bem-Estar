@@ -71,4 +71,25 @@ export const supportService = {
     }
 };
 
+export const chatgptService = {
+    async generateMetas(objetivoTexto) {
+        return request("/chatgpt", {
+            method: "POST",
+            body: JSON.stringify({ userInput: objetivoTexto }),
+        });
+    }
+};
+
+export const metaService = {
+    async createMany(usuario_id, metas) {
+        return request("/metas/createMany", {
+            method: "POST",
+            body: JSON.stringify({
+                usuario_id,
+                metas
+            }),
+        });
+    }
+};
+
 export default request;
