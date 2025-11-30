@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3333/api';
+const API_BASE_URL = 'https://app-bem-estar.onrender.com/api';
 
 async function request(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
