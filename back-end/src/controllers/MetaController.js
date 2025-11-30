@@ -1,15 +1,15 @@
 require('dotenv').config();
 const { Meta } = require('../models');
+
 module.exports = {
 
     /**
-       * Cria uma nova meta.
-       * @param {object} req - Requisição
-       * @param {object} res - Resposta
-       */
+     * Cria uma nova meta.
+     */
     async create(req, res) {
         try {
             const { usuario_id, titulo, descricao, dataConclusaoDesejada, status } = req.body;
+
             const meta = await Meta.create({
                 usuario_id: usuario_id,
                 titulo: titulo || null,
@@ -19,79 +19,92 @@ module.exports = {
                 criado_em: new Date(),
                 atualizado_em: new Date()
             });
+
             return res.status(201).json(meta);
+
         } catch (error) {
-            console.error('Erro ao criar meta: ', error);
-            return res.status(500).json({ error: 'Erro interno do servidor' });
-        }
-    },
-    //Usado para criar varias metas de uma vez (apenas IA)
-    async createMany(metasJson) {
-        try {
-            const metaArray = JSON.parse(metaArrayJson);
-            for (const meta of metaArray) {
-                const meta = await MetaModel.create({
-                    link: link,
-                    descricao: descricao,
-                    dataConcDesejada: dataConcDesejada,
-                    dataConcluida: null,
-                    created_at: new Date.now()
-                })
-            };
-            return res.status(201).json(metaArray);
-        } catch (error) {
-            console.error('Erro ao criar metas: ', error);
+            console.error('Erro ao criar meta:', error);
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
     },
 
     /**
-       * Retorna todas as metas.
-       * @param {object} req - Requisição
-       * @param {object} res - Resposta
-       */
+     * Cria várias metas de uma vez (usado pela IA)
+     */
+    async createMany(req, res) {
+        try {
+            const { usuario_id, metas } = req.body;
 
+            if (!metas || metas.length === 0) {
+                return res.status(400).json({ error: "Nenhuma meta enviada." });
+            }
+
+            const novasMetas = [];
+
+            for (const meta of metas) {
+                const nova = await Meta.create({
+                    usuario_id,
+                    titulo: meta.titulo || null,
+                    descricao: meta.descricao,
+                    dataConclusaoDesejada: meta.dataConclusao || null,
+                    status: "pendente",
+                    criado_em: new Date(),
+                    atualizado_em: new Date()
+                });
+
+                novasMetas.push(nova);
+            }
+
+            return res.status(201).json(novasMetas);
+
+        } catch (error) {
+            console.error("Erro ao criar metas:", error);
+            return res.status(500).json({ error: "Erro interno do servidor" });
+        }
+    },
+
+    /**
+     * Retorna todas as metas.
+     */
     async getAll(req, res) {
         try {
             const metas = await Meta.findAll();
             return res.status(200).json(metas);
         } catch (error) {
-            console.error('Erro ao buscar metas: ', error);
+            console.error('Erro ao buscar metas:', error);
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
     },
 
     /**
-       * Retorna uma meta pelo ID.
-       * @param {object} req - Requisição
-       * @param {object} res - Resposta
-       */
-
+     * Retorna uma meta pelo ID.
+     */
     async getById(req, res) {
         try {
             const { id } = req.params;
+
             const meta = await Meta.findByPk(id);
+
             if (!meta) {
                 return res.status(404).json({ error: 'Meta não encontrada' });
             }
+
             return res.status(200).json(meta);
+
         } catch (error) {
-            console.error('Erro ao buscar meta: ', error);
+            console.error('Erro ao buscar meta:', error);
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
     },
 
     /**
-       * Atualiza uma meta.
-       * @param {object} req - Requisição
-       * @param {object} res - Resposta
-       */
-
+     * Atualiza uma meta.
+     */
     async update(req, res) {
         try {
             const { id } = req.params;
             const { usuario_id, titulo, descricao, dataConclusaoDesejada, status } = req.body;
-            
+
             const updateData = {};
             if (usuario_id !== undefined) updateData.usuario_id = usuario_id;
             if (titulo !== undefined) updateData.titulo = titulo;
@@ -102,60 +115,54 @@ module.exports = {
 
             const meta = await Meta.update(
                 updateData,
-                {
-                    where: {
-                        id: id
-                    }
-                }
+                { where: { id } }
             );
+
             return res.status(200).json(meta);
+
         } catch (error) {
-            console.error('Erro ao atualizar meta: ', error);
+            console.error('Erro ao atualizar meta:', error);
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
     },
+
     /**
-       * Marca uma meta como concluída.
-       * @param {object} req - Requisição
-       * @param {object} res - Resposta
-       */
+     * Marca meta como concluída.
+     */
     async markAsComplete(req, res) {
         try {
             const { id } = req.params;
+
             const meta = await Meta.update(
-                { 
+                {
                     status: 'concluida',
                     atualizado_em: new Date()
                 },
-                {
-                    where: {
-                        id: id
-                    }
-                }
+                { where: { id } }
             );
+
             return res.status(200).json(meta);
+
         } catch (error) {
-            console.error('Erro ao atualizar meta: ', error);
+            console.error('Erro ao atualizar meta:', error);
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
     },
+
     /**
-   * Deleta uma meta.
-   * @param {object} req - Requisição
-   * @param {object} res - Resposta
-   */
+     * Deleta meta pelo ID.
+     */
     async delete(req, res) {
         try {
             const { id } = req.params;
-            await Meta.destroy({
-                where: {
-                    id: id
-                }
-            });
+
+            await Meta.destroy({ where: { id } });
+
             return res.status(204).send();
+
         } catch (error) {
-            console.error('Erro ao deletar meta: ', error);
+            console.error('Erro ao deletar meta:', error);
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
     }
-}
+};

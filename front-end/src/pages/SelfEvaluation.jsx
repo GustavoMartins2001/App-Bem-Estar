@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import NavbarDashboard from "../components/NavbarDashboard";
 import { useAuth } from "../contexts/AuthContext";
+import { autoavaliacaoService } from '../services/api';
 
-// --- O Componente Card (Mantido fora para evitar o bug do scroll) ---
 const Card = ({ children }) => (
   <div className="bg-white p-6 rounded-2xl shadow-xl border border-gray-100 mb-6">
     {children}
   </div>
 );
 
-// --- Componente LevelSelector ---
 const LevelSelector = ({ label, options, defaultValue, onChange }) => {
   const [selectedValue, setSelectedValue] = useState(defaultValue);
 
+// cases dos niveis de humor
   const getColorClasses = (value) => {
     switch (value) {
       case 1: return 'bg-red-600 hover:bg-red-700';
@@ -72,39 +72,64 @@ const LevelSelector = ({ label, options, defaultValue, onChange }) => {
   );
 };
 
-// --- Componente Principal ---
+
 export default function SelfEvaluation() {
+  const navigate = useNavigate();
+  const { user, logout, isAuthenticated } = useAuth();
+
   const [avaliacaoHumor, setAvaliacaoHumor] = useState(null);
   const [avaliacaoEnergia, setAvaliacaoEnergia] = useState(null);
   const [avaliacaoAnsiedade, setAvaliacaoAnsiedade] = useState(null);
   const [anotacoes, setAnotacoes] = useState('');
-  const { user, logout, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-  const userName = user?.name || "Usuário";
-  const userId = user?.id;
-  
-  // Simulação de dados do usuário para a Navbar
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate])
+
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
 
-  const handleSave = () => {
+  const handleSave = async() => {
     if (avaliacaoHumor === null || avaliacaoEnergia === null || avaliacaoAnsiedade === null) {
         alert('Por favor, preencha todos os campos obrigatórios (Humor, Energia e Ansiedade).');
         return;
     }
 
-    console.log({
-      avaliacaoHumor,
-      avaliacaoEnergia,
-      avaliacaoAnsiedade,
-      anotacoes,
-    });
-    
-    alert('Dados de autoavaliação salvos (Simulação)!');
+    if(!user || !user.id) {
+      alert('Usuário não foi identificado, tente o login novamente.')
+    }
+
+    setLoading(true);
+
+    // salvando dados
+    try {
+      const autoAvDados = {
+        usuario_id: user.id,
+        avaliacaoHumor,
+        avaliacaoEnergia,
+        avaliacaoAnsiedade,
+        anotacoes
+      };
+
+      await autoavaliacaoService.criar(autoAvDados);
+
+      alert('Sua avaliação do dia foi salva!');
+      navigate('/dashboard');
+
+    } catch (error) {
+      console.error('Erro ao salvar a avaliação:', error);
+      alert('Houve um erro ao salvar a avaliação! Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
   };
 
+// opções dos humores 
   const humorOptions = [
     { value: 1, label: 'Péssimo' },
     { value: 2, label: 'Mal' },
@@ -129,12 +154,13 @@ export default function SelfEvaluation() {
     { value: 5, label: 'Totalmente' },
   ];
 
+  if (!isAuthenticated()) return null;
+
+  //conteúdo da página
   return (
-    // ATENÇÃO: Alterei 'pt-10' para 'pt-24' aqui embaixo para a Navbar não cobrir o título
     <div className="min-h-screen bg-fundoPrimario pt-24 pb-20">
       
-      {/* Integração da Navbar */}
-      <NavbarDashboard userName={userName} onLogout={handleLogout} />
+      <NavbarDashboard userName={user?.name || "Usuário"} onLogout={handleLogout} />
 
       <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
         

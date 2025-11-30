@@ -46,6 +46,15 @@ export const authService = {
     },
 };
 
+export const autoavaliacaoService = {
+    async criar(dados) {
+        return request('/autoavaliacoes', {
+            method: 'POST',
+            body: JSON.stringify(dados)
+        });
+    }
+}
+
 export const dashboardService = {
 
     async getAutoavaliacoes(usuario_id){
@@ -68,6 +77,27 @@ export const dashboardService = {
 export const supportService = {
     async getRecursosApoio(){
         return request('/suportes');
+    }
+};
+
+export const chatgptService = {
+    async generateMetas(objetivoTexto) {
+        return request("/chatgpt", {
+            method: "POST",
+            body: JSON.stringify({ userInput: objetivoTexto }),
+        });
+    }
+};
+
+export const metaService = {
+    async createMany(usuario_id, metas) {
+        return request("/metas/createMany", {
+            method: "POST",
+            body: JSON.stringify({
+                usuario_id,
+                metas
+            }),
+        });
     }
 };
 
