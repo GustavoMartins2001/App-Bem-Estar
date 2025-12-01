@@ -4,16 +4,18 @@ import NavbarDashboard from "../components/NavbarDashboard";
 import { useAuth } from "../contexts/AuthContext";
 import { autoavaliacaoService } from '../services/api';
 
+// padrão para os cards corrigido
 const Card = ({ children }) => (
   <div className="bg-white p-6 rounded-2xl shadow-xl border border-gray-100 mb-6">
     {children}
   </div>
 );
 
+// seleção de case
 const LevelSelector = ({ label, options, defaultValue, onChange }) => {
   const [selectedValue, setSelectedValue] = useState(defaultValue);
 
-// cases dos niveis de humor
+// cases das cores dos niveis de humor
   const getColorClasses = (value) => {
     switch (value) {
       case 1: return 'bg-red-600 hover:bg-red-700';
@@ -32,6 +34,7 @@ const LevelSelector = ({ label, options, defaultValue, onChange }) => {
     }
   };
 
+  // estilo dos botões de seleção
   return (
     <div className="mb-4">
       <h3 className="text-lg font-semibold text-textoEscuro mb-3">{label} <span className="text-red-500">*</span></h3>
@@ -83,6 +86,7 @@ export default function SelfEvaluation() {
   const [anotacoes, setAnotacoes] = useState('');
   const [loading, setLoading] = useState(true);
 
+  // verificadores d login e logout
   useEffect(() => {
     if (!isAuthenticated()) {
       navigate("/login");
@@ -106,7 +110,7 @@ export default function SelfEvaluation() {
 
     setLoading(true);
 
-    // salvando dados
+    // salvando dados nas variaveis pro banco de dados
     try {
       const autoAvDados = {
         usuario_id: user.id,
@@ -129,7 +133,7 @@ export default function SelfEvaluation() {
     }
   };
 
-// opções dos humores 
+// opções dos humores e etc
   const humorOptions = [
     { value: 1, label: 'Péssimo' },
     { value: 2, label: 'Mal' },
@@ -156,7 +160,7 @@ export default function SelfEvaluation() {
 
   if (!isAuthenticated()) return null;
 
-  //conteúdo da página
+  //conteúdo geral da página (navbar, utilização dos cards pré-definidos, anotacoes e parte para salvar)
   return (
     <div className="min-h-screen bg-fundoPrimario pt-24 pb-20">
       
