@@ -66,7 +66,10 @@ module.exports = {
      */
     async getAll(req, res) {
         try {
-            const metas = await Meta.findAll();
+            const { id } = req.params;
+            const metas = await Meta.findAll({
+                where: { id }
+        });
             return res.status(200).json(metas);
         } catch (error) {
             console.error('Erro ao buscar metas:', error);

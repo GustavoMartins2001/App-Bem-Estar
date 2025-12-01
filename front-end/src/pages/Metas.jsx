@@ -99,7 +99,7 @@ export default function Metas() {
     try {
       if (metas.length === 0) {
         // Evita chamadas repetidas
-        const response = await metaService.getAll();
+        const response = await metaService.getAll(user?.id);
         const metas = response.map((el) => ({
           id: el.id,
           texto: el.descricao,
