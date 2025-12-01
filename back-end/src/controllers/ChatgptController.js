@@ -14,14 +14,17 @@ module.exports = {
             }
 
             // Schema de uma meta
-            const meta = z.object({
+            const metaSchema = z.object({
                 titulo: z.string(),
                 descricao: z.string(),
                 dataConclusao: z.string().regex(/^\d{2}-\d{2}-\d{4}$/, "Formato inválido. Use DD-MM-YYYY"),
             });
 
             // Agora o schema valida UM ARRAY de metas
-            const metasSchema = z.array(meta);
+            const metaArray = z.object({
+            meta: z.array(metaSchema),
+            userResponse: z.string(),
+        });
 
             // Chamada para o ChatGPT
             const response = await ChatGptClient.responses.create({
@@ -34,13 +37,12 @@ module.exports = {
                     "Não inclua explicações. Apenas JSON puro.",
                 input: userInput,
                 text: {
-                    format: zodTextFormat(metasSchema),
+                    format: zodTextFormat(metaArray, "meta"),
                 },
                 tools: [{ type: "web_search_preview" }],
             });
 
             const parsedMetas = JSON.parse(response.output_text);
-
             return res.status(201).json(parsedMetas);
 
         } catch (err) {

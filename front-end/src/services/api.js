@@ -82,7 +82,7 @@ export const supportService = {
 
 export const chatgptService = {
     async generateMetas(objetivoTexto) {
-        return request("/chatgpt", {
+         return await request("/chatgpt/gerar", {
             method: "POST",
             body: JSON.stringify({ userInput: objetivoTexto }),
         });
@@ -98,7 +98,29 @@ export const metaService = {
                 metas
             }),
         });
+    },
+    async create(usuario_id, meta) {
+        return request("/metas", {
+            method: "POST",
+            body: JSON.stringify({
+                usuario_id,
+                meta
+            }),
+        });
+    },
+
+    async getAll(usuario_id) {
+        return request("/metas/" + usuario_id, {
+            method: "GET",
+        });
+    },
+
+    async delete(metaId){
+        return request("/metas/" + metaId, {
+            method: "DELETE",
+        });
     }
+   
 };
 
 export default request;
