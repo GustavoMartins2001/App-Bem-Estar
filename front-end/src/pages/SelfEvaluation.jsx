@@ -15,6 +15,10 @@ const Card = ({ children }) => (
 const LevelSelector = ({ label, options, defaultValue, onChange }) => {
   const [selectedValue, setSelectedValue] = useState(defaultValue);
 
+  useEffect(() => {
+    setSelectedValue(defaultValue);
+  }, [defaultValue]);
+
 // cases das cores dos niveis de humor
   const getColorClasses = (value) => {
     switch (value) {
@@ -41,7 +45,7 @@ const LevelSelector = ({ label, options, defaultValue, onChange }) => {
       <div className="flex justify-between space-x-2">
         {options.map((opt) => {
           const isSelected = selectedValue === opt.value;
-          const baseClasses = getColorClasses(opt.value);
+          const selectedClasses = isSelected ? getColorClasses(opt.value) : 'bg-gray-300 hover:bg-gray-400 opacity-90';
           
           return (
             <button
@@ -50,23 +54,23 @@ const LevelSelector = ({ label, options, defaultValue, onChange }) => {
               aria-label={`${label}: ${opt.value} - ${opt.label}`}
               className={`
                 flex-1 flex flex-col items-center justify-center p-2 rounded-xl transition duration-150 ease-in-out
-                text-sm font-bold text-white shadow-md
-                ${baseClasses}
+                text-sm font-bold shadow-md
+                ${selectedClasses}
                 ${isSelected
-                  ? 'ring-4 ring-offset-2 ring-destaqueAcao scale-105 shadow-xl'
-                  : 'opacity-80'
+                  ? 'text-white ring-4 ring-offset-2 ring-destaqueAcao scale-105 shadow-xl'
+                  : 'text-gray-700'
                 }
               `}
               style={{ minWidth: '50px', minHeight: '50px' }}
             >
               <div
-                className={`w-8 h-8 flex items-center justify-center rounded-full text-white font-extrabold text-lg transition duration-300
-                  ${isSelected ? 'bg-white/30' : 'bg-transparent'}
+                className={`w-8 h-8 flex items-center justify-center rounded-full font-extrabold text-lg transition duration-300
+                  ${isSelected ? 'bg-white/30 text-white' : 'bg-gray-400/50 text-gray-700'}
                 `}
               >
                 {opt.value}
               </div>
-              <span className="text-xs mt-1 text-white font-medium text-center">{opt.label}</span>
+              <span className={`text-xs mt-1 font-medium text-center ${isSelected ? 'text-white' : 'text-gray-700'}`}>{opt.label}</span>
             </button>
           );
         })}
@@ -84,7 +88,7 @@ export default function SelfEvaluation() {
   const [avaliacaoEnergia, setAvaliacaoEnergia] = useState(null);
   const [avaliacaoAnsiedade, setAvaliacaoAnsiedade] = useState(null);
   const [anotacoes, setAnotacoes] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // verificadores d login e logout
   useEffect(() => {
@@ -213,9 +217,12 @@ export default function SelfEvaluation() {
         <div className="mt-8">
           <button
             onClick={handleSave}
-            className="w-full brilho bg-destaqueAcao hover:bg-destaqueAcao/80 text-white font-bold py-4 px-6 rounded-2xl shadow-lg transition duration-300 transform hover:scale-[1.01]"
+            disabled={loading}
+            className={`w-full brilho bg-destaqueAcao text-white font-bold py-4 px-6 rounded-2xl shadow-lg transition duration-300 transform 
+              ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-destaqueAcao/80 hover:scale-[1.01]'}
+            `}
           >
-            Salvar Avaliação
+            {loading ? 'Salvando...' : 'Salvar Avaliação'}
           </button>
         </div>
       </div>
