@@ -17,12 +17,14 @@ export default function Metas() {
   const [objetivo, setObjetivo] = useState("");
 
   useEffect(() => {
-    getMetas();
     if (!isAuthenticated()) {
       navigate("/login");
       return;
     }
-  }, [isAuthenticated, navigate]);
+    if (user?.id) {
+      getMetas();
+    }
+  }, [isAuthenticated, navigate, user?.id]);
 
   const handleLogout = () => {
     logout();
@@ -31,31 +33,54 @@ export default function Metas() {
 	
   const adicionarMeta = async () => {
     const texto = novaMeta.trim();
-    if (!texto) return;
+    if (!texto || !user?.id) return;
 
-    const nova = {
-      id: null,
-      texto,
-      concluida: false,
-    };
-    if (novaMeta != "") {
-      var meta = await metaService.create(user?.id, texto);// Salva no backend
-     nova.id = meta.id; // Atualiza ID com o do backend
-    } 
-     
-    setMetas((prev) => [nova, ...prev]);
-    setNovaMeta("");
+    try {
+      const meta = await metaService.create(user.id, texto); // Salva no backend
+      
+      // Recarrega as metas para garantir que está sincronizado
+      await getMetas();
+      setNovaMeta("");
+    } catch (error) {
+      console.error("Erro ao adicionar meta:", error);
+      alert("Erro ao adicionar meta. Tente novamente.");
+    }
   };
 
-  const toggleConcluida = (id) => {
-    setMetas((prev) =>
-      prev.map((m) => (m.id === id ? { ...m, concluida: !m.concluida } : m))
-    );
+  const toggleConcluida = async (id) => {
+    try {
+      // Busca a meta atual para verificar o status
+      const meta = metas.find((m) => m.id === id);
+      if (!meta) return;
+
+      // Se está concluída, marca como pendente, senão marca como concluída
+      if (meta.concluida) {
+        // Se quiser implementar desmarcar como concluída, precisaria de um endpoint PUT
+        // Por enquanto, apenas atualiza localmente
+        setMetas((prev) =>
+          prev.map((m) => (m.id === id ? { ...m, concluida: false } : m))
+        );
+      } else {
+        // Marca como concluída no backend
+        await metaService.markAsComplete(id);
+        // Recarrega as metas
+        await getMetas();
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar meta:", error);
+      alert("Erro ao atualizar meta. Tente novamente.");
+    }
   };
 
-  const removerMeta = (id) => {
-    deletarMeta(id); // Deleta do backend
-    setMetas((prev) => prev.filter((m) => m.id !== id));
+  const removerMeta = async (id) => {
+    try {
+      await deletarMeta(id); // Deleta do backend
+      // Recarrega as metas para garantir que está sincronizado
+      await getMetas();
+    } catch (error) {
+      console.error("Erro ao remover meta:", error);
+      alert("Erro ao remover meta. Tente novamente.");
+    }
   };
 
   // 🌟 Função nova: gerar metas com IA
@@ -75,14 +100,8 @@ export default function Metas() {
 
       alert("Metas geradas pela IA e salvas com sucesso!");
 
-      // 3️⃣ Opcional: atualizar metas locais
-      const convertidas = novasMetas.map((meta) => ({
-        id: meta.id,
-        texto: meta.descricao,
-        concluida: false,
-      }));
-
-      setMetas((prev) => [...convertidas, ...prev]);
+      // Recarrega as metas para garantir que está sincronizado
+      await getMetas();
 
       setObjetivo("");
     } catch (error) {
@@ -97,19 +116,24 @@ export default function Metas() {
 
   const getMetas = async () => {
     try {
-      if (metas.length === 0) {
-        // Evita chamadas repetidas
-        const response = await metaService.getAll();
-        const metas = response.map((el) => ({
+      if (!user?.id) return;
+      
+      // Sempre busca as metas do usuário logado
+      const response = await metaService.getAll(user.id);
+      
+      // Filtra novamente no frontend para garantir que são apenas do usuário logado
+      const userIdNum = Number(user.id);
+      const metasFiltradas = response
+        .filter((el) => Number(el.usuario_id) === userIdNum)
+        .map((el) => ({
           id: el.id,
           texto: el.descricao,
-          concluida: false,
+          concluida: el.status === "concluida" || el.status === "concluída",
         }));
 
-        setMetas((prev) => [...metas, ...prev]);
-        setObjetivo("");
-        console.log("Metas do backend:", response);
-      }
+      // Substitui completamente o array ao invés de adicionar
+      setMetas(metasFiltradas);
+      console.log("Metas do backend:", response);
     } catch (error) {
       console.error("Erro ao buscar metas:", error);
     }
