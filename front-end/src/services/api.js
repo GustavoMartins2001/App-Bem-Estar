@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://app-bem-estar.onrender.com/api';
+const API_BASE_URL = 'http://localhost:3333/api';
 
 async function request(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
@@ -82,7 +82,7 @@ export const supportService = {
 
 export const chatgptService = {
     async generateMetas(objetivoTexto) {
-        return request("/chatgpt", {
+         return await request("/chatgpt/gerar", {
             method: "POST",
             body: JSON.stringify({ userInput: objetivoTexto }),
         });
@@ -98,7 +98,29 @@ export const metaService = {
                 metas
             }),
         });
+    },
+    async create(usuario_id, meta) {
+        return request("/metas", {
+            method: "POST",
+            body: JSON.stringify({
+                usuario_id,
+                meta
+            }),
+        });
+    },
+
+    async getAll() {
+        return request("/metas", {
+            method: "GET",
+        });
+    },
+
+    async delete(metaId){
+        return request("/metas/" + metaId, {
+            method: "DELETE",
+        });
     }
+   
 };
 
 export default request;

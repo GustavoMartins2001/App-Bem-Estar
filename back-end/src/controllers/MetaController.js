@@ -8,19 +8,15 @@ module.exports = {
      */
     async create(req, res) {
         try {
-            const { usuario_id, titulo, descricao, dataConclusaoDesejada, status } = req.body;
-
-            const meta = await Meta.create({
+            const { usuario_id, meta} = req.body;
+            const newMeta = await Meta.create({
                 usuario_id: usuario_id,
-                titulo: titulo || null,
-                descricao: descricao,
-                dataConclusaoDesejada: dataConclusaoDesejada || null,
-                status: status || 'pendente',
-                criado_em: new Date(),
-                atualizado_em: new Date()
+                descricao: meta,
+                status: 'pendente',
+                createdAt: new Date(),
             });
 
-            return res.status(201).json(meta);
+            return res.status(201).json(newMeta);
 
         } catch (error) {
             console.error('Erro ao criar meta:', error);
@@ -42,14 +38,16 @@ module.exports = {
             const novasMetas = [];
 
             for (const meta of metas) {
+                
+            const [day, month, year] = meta.dataConclusao.split("-");
+            const dataConcDesejada = new Date(`${year}-${month}-${day}`);
+
                 const nova = await Meta.create({
                     usuario_id,
-                    titulo: meta.titulo || null,
                     descricao: meta.descricao,
-                    dataConclusaoDesejada: meta.dataConclusao || null,
+                    dataConcDesejada: dataConcDesejada || null,
                     status: "pendente",
-                    criado_em: new Date(),
-                    atualizado_em: new Date()
+                    createdAt: new Date(),
                 });
 
                 novasMetas.push(nova);

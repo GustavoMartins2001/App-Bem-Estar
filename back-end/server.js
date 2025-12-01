@@ -1,3 +1,4 @@
+
 require('dotenv').config();
 const { OpenAI } = require("openai");
 const express = require('express');
@@ -17,6 +18,8 @@ const { User, Meta, Autoavaliacao, Relatorio, Conteudo, Suporte } = require('./s
 const chatGptClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const app = express();
 const PORT = process.env.PORT || 3333;
+
+// process.env.NODE_ENV = 'production';
 
 app.use(cors());
 app.use(express.json());
