@@ -109,8 +109,8 @@ export const metaService = {
         });
     },
 
-    async getAll() {
-        return request("/metas", {
+    async getAll(usuario_id) {
+        return request("/metas/" + usuario_id, {
             method: "GET",
         });
     },
