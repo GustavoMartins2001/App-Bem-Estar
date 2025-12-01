@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import NavbarDashboard from "../components/NavbarDashboard";
 import { useAuth } from "../contexts/AuthContext";
-import { dashboardService } from "../services/api";
+import { dashboardService, metaService } from "../services/api";
 
 export default function Dashboard() {
   const { user, logout, isAuthenticated } = useAuth();
@@ -28,7 +28,7 @@ export default function Dashboard() {
 
       const [avaliacoes, metas, relatorioSemanal] = await Promise.all([
         dashboardService.getAutoavaliacoes(userId).catch(() => []),
-        dashboardService.getMetas().catch(() => []),
+        dashboardService.getMetas(userId).catch(() => []),
         dashboardService.getRelatorioSemanal(userId).catch(() => null),
       ]); 
 
@@ -70,10 +70,10 @@ export default function Dashboard() {
       }
 
       if (Array.isArray(metas)) {
-        const metasUsuario = metas
+        // As metas já vêm filtradas por usuário do backend
+        const metasPendentesFiltradas = metas
           .filter(
             (meta) =>
-              meta.usuario_id === userId &&
               meta.status !== "concluida" &&
               meta.status !== "concluída"
           )
@@ -83,7 +83,7 @@ export default function Dashboard() {
             return dataA - dataB;
           });
 
-        setMetasPendentes(metasUsuario);
+        setMetasPendentes(metasPendentesFiltradas);
       } else {
         setMetasPendentes([]);
       }
@@ -118,6 +118,16 @@ export default function Dashboard() {
   const handleLogout = () => {
     logout();
     navigate("/login");
+  };
+
+  const concluirMeta = async (metaId) => {
+    try {
+      await metaService.markAsComplete(metaId);
+      await carregarDados();
+    } catch (error) {
+      console.error("Erro ao concluir meta:", error);
+      setError("Erro ao concluir meta. Tente novamente.");
+    }
   };
 
   const getHumorEmoji = (valor) => {
@@ -320,7 +330,10 @@ export default function Dashboard() {
                     <p className="font-semibold text-textoEscuro flex-1">
                       {meta.descricao}
                     </p>
-                    <button className="ml-2 px-3 py-1 bg-destaqueAcao hover:bg-destaqueAcao/80 text-textoEscuro text-sm font-semibold rounded-full transition">
+                    <button 
+                      onClick={() => concluirMeta(meta.id)}
+                      className="ml-2 px-3 py-1 bg-destaqueAcao hover:bg-destaqueAcao/80 text-textoEscuro text-sm font-semibold rounded-full transition"
+                    >
                       ✓ Concluir
                     </button>
                   </div>

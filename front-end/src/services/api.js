@@ -61,8 +61,9 @@ export const dashboardService = {
         return request(`/autoavaliacoes/${usuario_id}`);
     },
 
-    async getMetas(){
-        return request('/metas/meta');
+    async getMetas(usuario_id){
+        const endpoint = usuario_id ? `/metas?usuario_id=${usuario_id}` : '/metas';
+        return request(endpoint);
     },
 
     async getRelatorioSemanal(usuario_id){
@@ -110,7 +111,8 @@ export const metaService = {
     },
 
     async getAll(usuario_id) {
-        return request("/metas/" + usuario_id, {
+        const endpoint = usuario_id ? `/metas?usuario_id=${usuario_id}` : '/metas';
+        return request(endpoint, {
             method: "GET",
         });
     },
@@ -118,6 +120,12 @@ export const metaService = {
     async delete(metaId){
         return request("/metas/" + metaId, {
             method: "DELETE",
+        });
+    },
+
+    async markAsComplete(metaId){
+        return request("/metas/" + metaId, {
+            method: "PATCH",
         });
     }
    

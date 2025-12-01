@@ -15,20 +15,51 @@ export default function Reports() {
     const [relatorioSemanal, setRelatorioSemanal] = useState(null);
     const [relatorioMensal, setRelatorioMensal] = useState(null);
     const [humorSemanal, setHumorSemanal] = useState([]);
+    const [estatisticasMetas, setEstatisticasMetas] = useState({
+        total: 0,
+        concluidas: 0,
+        pendentes: 0,
+        taxaConclusao: 0
+    });
 
     const carregarDados = useCallback(async () => {
         try {
             setLoading(true);
             setError(null);
 
-            const [semanal, mensal, avaliacoes] = await Promise.all([
+            const [semanal, mensal, avaliacoes, metas] = await Promise.all([
                 dashboardService.getRelatorioSemanal(userId).catch(() => null),
                 dashboardService.getRelatorioMensal(userId).catch(() => null),
                 dashboardService.getAutoavaliacoes(userId).catch(() => []),
+                dashboardService.getMetas(userId).catch(() => []),
               ]);
             
             setRelatorioSemanal(semanal);
             setRelatorioMensal(mensal);
+
+            // Calcular estatísticas de metas
+            if (Array.isArray(metas)) {
+                const total = metas.length;
+                const concluidas = metas.filter(
+                    (meta) => meta.status === "concluida" || meta.status === "concluída"
+                ).length;
+                const pendentes = total - concluidas;
+                const taxaConclusao = total > 0 ? Math.round((concluidas / total) * 100) : 0;
+
+                setEstatisticasMetas({
+                    total,
+                    concluidas,
+                    pendentes,
+                    taxaConclusao
+                });
+            } else {
+                setEstatisticasMetas({
+                    total: 0,
+                    concluidas: 0,
+                    pendentes: 0,
+                    taxaConclusao: 0
+                });
+            }
 
             if (Array.isArray(avaliacoes) && avaliacoes.length > 0) {
                 const hoje = new Date();
@@ -274,6 +305,45 @@ export default function Reports() {
             ) : (
               <p className="text-textoEscuro/60 text-center py-8">
                 Não há dados suficientes para comparar. Registre mais avaliações!
+              </p>
+            )}
+          </div>
+
+          {/* Estatísticas de Metas */}
+          <div className="bg-white rounded-2xl p-6 shadow-lg mb-6">
+            <h2 className="text-2xl font-bold text-textoEscuro mb-6">
+              📊 Estatísticas de Metas
+            </h2>
+            
+            {estatisticasMetas.total > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="bg-fundoPrimario/20 rounded-xl p-4 text-center">
+                  <div className="text-3xl mb-2">🎯</div>
+                  <p className="text-sm text-textoEscuro/60 mb-1">Total de Metas</p>
+                  <p className="text-2xl font-bold text-textoEscuro">{estatisticasMetas.total}</p>
+                </div>
+                
+                <div className="bg-green-100 rounded-xl p-4 text-center">
+                  <div className="text-3xl mb-2">✅</div>
+                  <p className="text-sm text-textoEscuro/60 mb-1">Concluídas</p>
+                  <p className="text-2xl font-bold text-green-700">{estatisticasMetas.concluidas}</p>
+                </div>
+                
+                <div className="bg-yellow-100 rounded-xl p-4 text-center">
+                  <div className="text-3xl mb-2">⏳</div>
+                  <p className="text-sm text-textoEscuro/60 mb-1">Pendentes</p>
+                  <p className="text-2xl font-bold text-yellow-700">{estatisticasMetas.pendentes}</p>
+                </div>
+                
+                <div className="bg-blue-100 rounded-xl p-4 text-center">
+                  <div className="text-3xl mb-2">📈</div>
+                  <p className="text-sm text-textoEscuro/60 mb-1">Taxa de Conclusão</p>
+                  <p className="text-2xl font-bold text-blue-700">{estatisticasMetas.taxaConclusao}%</p>
+                </div>
+              </div>
+            ) : (
+              <p className="text-textoEscuro/60 text-center py-8">
+                Você ainda não possui metas cadastradas. Crie suas primeiras metas para acompanhar seu progresso!
               </p>
             )}
           </div>

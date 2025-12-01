@@ -62,14 +62,21 @@ module.exports = {
     },
 
     /**
-     * Retorna todas as metas.
+     * Retorna todas as metas ou filtra por usuario_id se fornecido.
      */
     async getAll(req, res) {
         try {
-            const { id } = req.params;
+            const { usuario_id } = req.query;
+            
+            const whereClause = {};
+            if (usuario_id) {
+                whereClause.usuario_id = Number(usuario_id);
+            }
+            
             const metas = await Meta.findAll({
-                where: { id }
-        });
+                where: whereClause
+            });
+            
             return res.status(200).json(metas);
         } catch (error) {
             console.error('Erro ao buscar metas:', error);
