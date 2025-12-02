@@ -11,6 +11,7 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // lógica de login e autenticação
   useEffect(() => {
     if(isAuthenticated()){
       navigate("/dashboard");
@@ -33,8 +34,9 @@ export default function Login() {
     setIsLoading(false);
   };
 
+  // conteúdo da página
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen relative pt-20">
+    <div className="bg-gradiente flex flex-col items-center justify-center min-h-screen relative pt-20">
       <Navbar />
 
       <header className="text-center mb-16">
