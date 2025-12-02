@@ -5,7 +5,7 @@ const metaRoutes = Router();
 
 metaRoutes.post('/createMany', MetaController.createMany);
 metaRoutes.post('/', MetaController.create);
-metaRoutes.get('/:id', MetaController.getById);
+metaRoutes.get('/:id', MetaController.getAll);
 metaRoutes.put('/:id', MetaController.update);
 metaRoutes.patch('/:id', MetaController.markAsComplete);
 metaRoutes.delete('/:id', MetaController.delete);
