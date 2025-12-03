@@ -89,6 +89,7 @@ export default function SelfEvaluation() {
   const [avaliacaoAnsiedade, setAvaliacaoAnsiedade] = useState(null);
   const [anotacoes, setAnotacoes] = useState('');
   const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState(null); // { message, type }
 
   // verificadores d login e logout
   useEffect(() => {
@@ -102,14 +103,20 @@ export default function SelfEvaluation() {
     navigate("/login");
   };
 
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
+
   const handleSave = async() => {
     if (avaliacaoHumor === null || avaliacaoEnergia === null || avaliacaoAnsiedade === null) {
-        alert('Por favor, preencha todos os campos obrigatórios (Humor, Energia e Ansiedade).');
+        showToast('Por favor, preencha todos os campos obrigatórios (Humor, Energia e Ansiedade).', 'error');
         return;
     }
 
     if(!user || !user.id) {
-      alert('Usuário não foi identificado, tente o login novamente.')
+      showToast('Usuário não foi identificado, tente o login novamente.', 'error');
+      return;
     }
 
     setLoading(true);
@@ -126,14 +133,19 @@ export default function SelfEvaluation() {
 
       await autoavaliacaoService.criar(autoAvDados);
 
-      alert('Sua avaliação do dia foi salva!');
-      navigate('/dashboard');
+      // Para o loading antes de mostrar o toast
+      setLoading(false);
+      showToast('Sua avaliação do dia foi salva!');
+
+      // Dá um pequeno tempo para o usuário ver o toast antes de navegar
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1500);
 
     } catch (error) {
       console.error('Erro ao salvar a avaliação:', error);
-      alert('Houve um erro ao salvar a avaliação! Tente novamente.');
-    } finally {
       setLoading(false);
+      showToast('Houve um erro ao salvar a avaliação! Tente novamente.', 'error');
     }
   };
 
@@ -166,8 +178,16 @@ export default function SelfEvaluation() {
 
   //conteúdo geral da página (navbar, utilização dos cards pré-definidos, anotacoes e parte para salvar)
   return (
-    <div className="min-h-screen bg-fundoPrimario pt-24 pb-20">
-      
+    <div className="min-h-screen bg-fundoPrimario pt-24 pb-20 relative">
+      {toast && (
+        <div
+          className={`fixed top-24 right-6 px-4 py-3 rounded-xl shadow-lg text-white text-sm font-medium transition-opacity
+          ${toast.type === "success" ? "bg-green-500" : "bg-red-500"}`}
+        >
+          {toast.message}
+        </div>
+      )}
+
       <NavbarDashboard userName={user?.name || "Usuário"} onLogout={handleLogout} />
 
       <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8">

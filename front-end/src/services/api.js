@@ -18,14 +18,19 @@ async function request(endpoint, options = {}) {
 
     try {
         const response = await fetch(url, config);
-        const data =  await response.json();
 
-        if(!response.ok){
+        if (response.status === 204) {
+            return null;
+        }
+
+        const data = await response.json();
+
+        if (!response.ok) {
             throw new Error(data.error || data.message || 'Erro na requisição');
         }
 
         return data;
-    }catch(error){
+    } catch (error) {
         throw error;
     } 
 }

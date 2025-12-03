@@ -12,6 +12,7 @@ export default function Metas() {
 
   const [novaMeta, setNovaMeta] = useState("");
   const [metas, setMetas] = useState([]);
+  const [toast, setToast] = useState(null); // { message, type }
 
   // 🌟 Novo: objetivo para IA
   const [objetivo, setObjetivo] = useState("");
@@ -30,6 +31,13 @@ export default function Metas() {
     logout();
     navigate("/login");
   };
+
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
+    setTimeout(() => {
+      setToast(null);
+    }, 3000);
+  };
 	
   const adicionarMeta = async () => {
     const texto = novaMeta.trim();
@@ -41,9 +49,10 @@ export default function Metas() {
       // Recarrega as metas para garantir que está sincronizado
       await getMetas();
       setNovaMeta("");
+      showToast("Meta adicionada com sucesso!");
     } catch (error) {
       console.error("Erro ao adicionar meta:", error);
-      alert("Erro ao adicionar meta. Tente novamente.");
+      showToast("Erro ao adicionar meta. Tente novamente.", "error");
     }
   };
 
@@ -63,12 +72,14 @@ export default function Metas() {
       } else {
         // Marca como concluída no backend
         await metaService.markAsComplete(id);
-        // Recarrega as metas
-        await getMetas();
+        showToast("Meta concluída com sucesso!");
+        setTimeout(async () => {
+          await getMetas();
+        }, 500);
       }
     } catch (error) {
       console.error("Erro ao atualizar meta:", error);
-      alert("Erro ao atualizar meta. Tente novamente.");
+      showToast("Erro ao atualizar meta. Tente novamente.", "error");
     }
   };
 
@@ -77,16 +88,17 @@ export default function Metas() {
       await deletarMeta(id); // Deleta do backend
       // Recarrega as metas para garantir que está sincronizado
       await getMetas();
+      showToast("Meta removida com sucesso!");
     } catch (error) {
       console.error("Erro ao remover meta:", error);
-      alert("Erro ao remover meta. Tente novamente.");
+      showToast("Erro ao remover meta. Tente novamente.", "error");
     }
   };
 
   // 🌟 Função nova: gerar metas com IA
   const gerarMetasIA = async () => {
     if (!objetivo.trim()) {
-      alert("Digite o objetivo primeiro!");
+      showToast("Digite o objetivo primeiro!", "error");
       return;
     }
 
@@ -98,7 +110,7 @@ export default function Metas() {
       // 2️⃣ Envia metas para o createMany no backend
       const novasMetas = await metaService.createMany(user?.id, metasGeradas);
 
-      alert("Metas geradas pela IA e salvas com sucesso!");
+      showToast("Metas geradas pela IA e salvas com sucesso!");
 
       // Recarrega as metas para garantir que está sincronizado
       await getMetas();
@@ -106,7 +118,7 @@ export default function Metas() {
       setObjetivo("");
     } catch (error) {
       console.error("Erro ao gerar metas com IA:", error);
-      alert("Erro ao gerar metas com IA.");
+      showToast("Erro ao gerar metas com IA.", "error");
     }
   };
 
@@ -140,7 +152,15 @@ export default function Metas() {
   };
 
   return (
-    <div className="min-h-screen bg-fundoPrimario pt-24 pb-20">
+    <div className="min-h-screen bg-fundoPrimario pt-24 pb-20 relative">
+      {toast && (
+        <div
+          className={`fixed top-24 right-6 px-4 py-3 rounded-xl shadow-lg text-white text-sm font-medium transition-opacity
+          ${toast.type === "success" ? "bg-green-500" : "bg-red-500"}`}
+        >
+          {toast.message}
+        </div>
+      )}
       <NavbarDashboard userName={userName} onLogout={handleLogout} />
 
       <div className="container mx-auto px-4">
