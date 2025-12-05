@@ -24,17 +24,6 @@ export default function NavbarDashboard({ userName, onLogout }) {
         </button>
 
         <button
-          onClick={() => navigate("/reports")}
-          className={`px-4 py-2 rounded-full font-semibold transition ${
-            location.pathname === "/reports"
-              ? "bg-destaqueAcao text-textoEscuro"
-              : "text-fundoSecundario hover:text-destaqueAcao"
-          }`}
-        >
-          Relatórios
-        </button>
-
-        <button
           onClick={() => navigate("/self-evaluation")}
           className={`px-4 py-2 rounded-full font-semibold transition ${
             location.pathname === "/self-evaluation"
@@ -45,9 +34,26 @@ export default function NavbarDashboard({ userName, onLogout }) {
           Avaliação
         </button>
 
-        <button onClick={() => navigate("/meta")}
-        className="px-4 py-2 rounded-full font-semibold transition text-fundoSecundario hover:text-destaqueAcao">
+        <button
+          onClick={() => navigate("/meta")}
+          className={`px-4 py-2 rounded-full font-semibold transition ${
+            location.pathname === "/meta"
+              ? "bg-destaqueAcao text-textoEscuro"
+              : "text-fundoSecundario hover:text-destaqueAcao"
+          }`}
+        >
           Metas
+        </button>
+
+        <button
+          onClick={() => navigate("/reports")}
+          className={`px-4 py-2 rounded-full font-semibold transition ${
+            location.pathname === "/reports"
+              ? "bg-destaqueAcao text-textoEscuro"
+              : "text-fundoSecundario hover:text-destaqueAcao"
+          }`}
+        >
+          Relatórios
         </button>
 
         <button

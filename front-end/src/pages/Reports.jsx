@@ -3,6 +3,15 @@ import { useNavigate } from "react-router-dom";
 import NavbarDashboard from "../components/NavbarDashboard";
 import { useAuth } from "../contexts/AuthContext";
 import { dashboardService } from "../services/api";
+import {
+  LineChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 export default function Reports() {
     const { user, logout, isAuthenticated } = useAuth();
@@ -128,13 +137,12 @@ export default function Reports() {
         return Math.round(diferenca);
     };
 
-    // Renderizar gráfico de linha
+  // Renderizar gráfico de linha com Recharts
   const renderizarGrafico = () => {
     const diasSemana = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
     const valores = humorSemanal.map((v) => (v !== null ? v : 0));
-    
-    // Verificar se há valores válidos
-    const valoresValidos = valores.filter(v => v > 0);
+
+    const valoresValidos = valores.filter((v) => v > 0);
     if (valoresValidos.length === 0) {
       return (
         <p className="text-textoEscuro/60 text-center py-8">
@@ -142,77 +150,52 @@ export default function Reports() {
         </p>
       );
     }
-    
-    const maxValor = Math.max(...valores, 5);
-    const minValor = valoresValidos.length > 0 
-      ? Math.min(...valoresValidos) 
-      : 0;
-    const range = maxValor - minValor || 5;
-    const altura = 200;
-    const largura = 600;
-    const padding = 40;
 
-    // Calcular pontos do gráfico
-    const pontos = valores.map((valor, index) => {
-      const x = padding + (index * (largura - 2 * padding)) / 6;
-      const y = altura - padding - ((valor - minValor) / range) * (altura - 2 * padding);
-      return { x, y, valor };
-    });
-
-    // Criar path para a linha (apenas pontos válidos)
-    const pontosValidos = pontos.filter((p, i) => valores[i] > 0);
-    const pathData = pontosValidos.length > 0
-      ? pontosValidos
-          .map((p, i) => (i === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${p.y}`))
-          .join(' ')
-      : '';
+    const dadosGrafico = diasSemana.map((dia, index) => ({
+      dia,
+      valor: valores[index] ?? 0,
+    }));
 
     return (
-      <div className="relative">
-        <svg width={largura} height={altura} className="w-full h-auto">
-          {/* Linha de fundo */}
-          <line
-            x1={padding}
-            y1={altura - padding}
-            x2={largura - padding}
-            y2={altura - padding}
-            stroke="#e5e7eb"
-            strokeWidth="2"
-          />
-          
-          {/* Linha do gráfico */}
-          {pathData && (
-            <path
-              d={pathData}
-              fill="none"
-              stroke="#a855f7"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+      <div className="w-full">
+        <ResponsiveContainer width="100%" height={240}>
+          <LineChart
+            data={dadosGrafico}
+            margin={{ top: 10, right: 20, left: 0, bottom: 10 }}
+          >
+            <CartesianGrid stroke="#e5e7eb" strokeDasharray="4 4" />
+            <XAxis
+              dataKey="dia"
+              axisLine={{ stroke: "#e5e7eb" }}
+              tickLine={false}
+              tick={{ fill: "#4b5563", fontSize: 12 }}
             />
-          )}
-          
-          {/* Pontos */}
-          {pontos.map((p, i) => (
-            valores[i] > 0 && (
-              <circle
-                key={i}
-                cx={p.x}
-                cy={p.y}
-                r="5"
-                fill="#a855f7"
-                className="hover:r-7 transition-all"
-              />
-            )
-          ))}
-        </svg>
-        
-        {/* Labels dos dias */}
-        <div className="flex justify-between mt-4 px-10">
+            <YAxis
+              axisLine={{ stroke: "#e5e7eb" }}
+              tickLine={false}
+              tick={{ fill: "#4b5563", fontSize: 12 }}
+            />
+            <Tooltip
+              formatter={(value) => [`${value}`, "Humor"]}
+              labelFormatter={(label) => `Dia: ${label}`}
+            />
+            <Line
+              type="monotone"
+              dataKey="valor"
+              stroke="#a855f7"
+              strokeWidth={3}
+              dot={{ r: 5, strokeWidth: 0, fill: "#a855f7" }}
+              activeDot={{ r: 7 }}
+              connectNulls
+            />
+          </LineChart>
+        </ResponsiveContainer>
+
+        <div className="grid grid-cols-7 gap-3 mt-4 max-w-3xl mx-auto">
           {diasSemana.map((dia, index) => (
             <div
               key={index}
-              className="w-8 h-8 rounded-full bg-fundoPrimario/30 flex items-center justify-center text-sm font-semibold text-textoEscuro"
+              className="w-10 h-10 rounded-full bg-fundoPrimario/30 flex items-center justify-center text-sm font-semibold text-textoEscuro"
             >
               {dia}
             </div>
